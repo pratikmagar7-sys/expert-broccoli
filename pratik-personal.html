@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pratik — Personal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f4ef;
+  --surface: #ffffff;
+  --surface2: #f0ece4;
+  --border: rgba(0,0,0,0.08);
+  --border-mid: rgba(0,0,0,0.14);
+  --text: #1a1714;
+  --muted: #7a7163;
+  --accent: #c0392b;
+  --green: #2d6a4f;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+.hero { max-width: 1100px; margin: 0 auto; padding: 80px 60px 64px; border-bottom: 1px solid var(--border); }
+.hero-eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 24px; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(52px, 8vw, 92px); font-weight: 900; line-height: 0.95; letter-spacing: -0.02em; color: var(--text); margin-bottom: 28px; }
+.hero h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
+.hero-bio { font-size: 18px; line-height: 1.7; color: var(--muted); max-width: 540px; margin-bottom: 36px; font-weight: 300; }
+.hero-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.hero-links a { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--border-mid); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+.hero-links a:hover { color: var(--accent); border-color: var(--accent); }
+
+.sections { max-width: 1100px; margin: 0 auto; padding: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); }
+
+.section-box { background: var(--bg); cursor: pointer; transition: background 0.2s; }
+.section-box:hover, .section-box.open { background: var(--surface); }
+.section-header { padding: 44px 44px 40px; display: flex; justify-content: space-between; align-items: flex-start; user-select: none; }
+.section-num { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 10px; }
+.section-title { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 700; line-height: 1.1; color: var(--text); }
+.section-sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 8px; letter-spacing: 0.04em; }
+.section-arrow { font-size: 22px; color: var(--muted); transition: transform 0.35s ease, color 0.2s; margin-top: 4px; flex-shrink: 0; }
+.section-box.open .section-arrow { transform: rotate(135deg); color: var(--accent); }
+.section-content { max-height: 0; overflow: hidden; transition: max-height 0.55s cubic-bezier(0.4,0,0.2,1); }
+.section-box.open .section-content { max-height: 3000px; }
+.section-inner { padding: 0 44px 44px; border-top: 1px solid var(--border); }
+
+/* BOOKS */
+.books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 16px; margin-top: 28px; }
+.book-card { display: flex; flex-direction: column; gap: 10px; }
+.book-cover { width: 100%; aspect-ratio: 2/3; background: var(--surface2); border: 1px solid var(--border); overflow: hidden; position: relative; }
+.book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+.book-card:hover .book-cover img { transform: scale(1.04); }
+.book-cover-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 12px; text-align: center; background: var(--surface2); }
+.book-cover-fallback span { font-family: 'Playfair Display', serif; font-size: 12px; font-style: italic; color: var(--muted); line-height: 1.3; }
+.book-title-text { font-family: 'Playfair Display', serif; font-size: 13px; line-height: 1.35; color: var(--text); margin-bottom: 3px; }
+.book-author { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; }
+.book-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border: 1px solid var(--border-mid); color: var(--muted); }
+.tag.finished { border-color: rgba(45,106,79,0.35); color: var(--green); }
+.tag.reading { border-color: rgba(192,57,43,0.3); color: var(--accent); }
+
+/* MAP */
+.map-wrap { margin-top: 28px; background: #dceae2; border: 1px solid var(--border); overflow: hidden; position: relative; border-radius: 2px; }
+#world-map { width: 100%; display: block; cursor: grab; }
+#world-map:active { cursor: grabbing; }
+.map-tip { position: absolute; top: 12px; right: 12px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; }
+.map-legend { position: absolute; bottom: 12px; left: 14px; display: flex; gap: 14px; align-items: center; background: rgba(255,255,255,0.85); padding: 6px 10px; border-radius: 2px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.06em; color: var(--muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.travel-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-top: 20px; }
+.stat-box { background: var(--surface); padding: 18px 16px; text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--accent); display: block; margin-bottom: 3px; }
+.stat-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+/* EVENTS */
+.events-list { margin-top: 28px; display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+.event-item { background: var(--surface); padding: 18px 22px; display: flex; gap: 20px; align-items: flex-start; transition: background 0.2s; }
+.event-item:hover { background: var(--surface2); }
+.event-year { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.08em; min-width: 44px; padding-top: 2px; }
+.event-name { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--text); margin-bottom: 3px; line-height: 1.4; }
+.event-detail { font-size: 12px; color: var(--muted); }
+.badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+.badge-winner { background: rgba(45,106,79,0.1); color: var(--green); border: 1px solid rgba(45,106,79,0.25); }
+
+.footer { max-width: 1100px; margin: 0 auto; padding: 36px 60px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+.footer-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--accent); }
+
+@media (max-width: 720px) {
+  .hero { padding: 48px 24px 40px; }
+  .sections { grid-template-columns: 1fr; padding: 0; }
+  .section-header { padding: 32px 24px 28px; }
+  .section-inner { padding: 0 24px 32px; }
+  .travel-stats { grid-template-columns: repeat(2,1fr); }
+  .footer { padding: 28px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">Pratik · Bangalore, India</div>
+  <h1>Builder.<br><em>Explorer.</em><br>Founder.</h1>
+  <p class="hero-bio">Two-time founder. Robotics champion. Building at the intersection of AI and web3. Inflection Network — agentic payments infrastructure.</p>
+  <div class="hero-links">
+    <a href="https://twitter.com/" target="_blank">Twitter / X ↗</a>
+    <a href="https://linkedin.com/" target="_blank">LinkedIn ↗</a>
+    <a href="#" target="_blank">Inflection Talks Podcast ↗</a>
+    <a href="mailto:pratik@inflectionnetwork.io">Email ↗</a>
+  </div>
+</div>
+
+<div class="sections">
+
+  <div class="section-box" onclick="toggle(this)">
+    <div class="section-header">
+      <div>
+        <div class="section-num">01</div>
+        <div class="section-title">Reading</div>
+        <div class="section-sub">13 books · 10 finished · 3 in progress</div>
+      </div>
+      <div class="section-arrow">+</div>
+    </div>
+    <div class="section-content">
+      <div class="section-inner">
+        <div class="books-grid" id="books-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" onclick="toggle(this)">
+    <div class="section-header">
+      <div>
+        <div class="section-num">02</div>
+        <div class="section-title">Travel</div>
+        <div class="section-sub">55 countries · 6 continents</div>
+      </div>
+      <div class="section-arrow">+</div>
+    </div>
+    <div class="section-content">
+      <div class="section-inner">
+        <div class="map-wrap">
+          <svg id="world-map" viewBox="0 0 960 500"></svg>
+          <div class="map-tip">scroll to zoom · drag to pan · hover a country</div>
+          <div class="map-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#2d6a4f;"></div>Visited</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#c8d8cf;"></div>Not yet</div>
+          </div>
+        </div>
+        <div class="travel-stats">
+          <div class="stat-box"><span class="stat-num">55</span><span class="stat-label">Countries</span></div>
+          <div class="stat-box"><span class="stat-num">6</span><span class="stat-label">Continents</span></div>
+          <div class="stat-box"><span class="stat-num">20+</span><span class="stat-label">Europe</span></div>
+          <div class="stat-box"><span class="stat-num">8+</span><span class="stat-label">Asia Pac</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" onclick="toggle(this)">
+    <div class="section-header">
+      <div>
+        <div class="section-num">03</div>
+        <div class="section-title">Robotics</div>
+        <div class="section-sub">ABU Robocon · India nationals winner</div>
+      </div>
+      <div class="section-arrow">+</div>
+    </div>
+    <div class="section-content">
+      <div class="section-inner">
+        <div class="events-list">
+          <div class="event-item">
+            <div class="event-year">2019</div>
+            <div>
+              <div class="event-name">ABU Robocon — India Nationals <span class="badge badge-winner">Winner</span></div>
+              <div class="event-detail">All India Radio · National champion, represented India internationally</div>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-year">2019</div>
+            <div>
+              <div class="event-name">ABU Robocon — International Semifinals</div>
+              <div class="event-detail">Asia Pacific Robot Contest · International stage</div>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-year">2018</div>
+            <div>
+              <div class="event-name">ABU Robocon — Regional & National Rounds</div>
+              <div class="event-detail">Multi-stage national qualification</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" onclick="toggle(this)">
+    <div class="section-header">
+      <div>
+        <div class="section-num">04</div>
+        <div class="section-title">Quiz</div>
+        <div class="section-sub">Competitive quizzing</div>
+      </div>
+      <div class="section-arrow">+</div>
+    </div>
+    <div class="section-content">
+      <div class="section-inner">
+        <div class="events-list">
+          <div class="event-item">
+            <div class="event-year">—</div>
+            <div>
+              <div class="event-name">Add your quiz events here</div>
+              <div class="event-detail">Update with specific competitions, years, results</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" onclick="toggle(this)">
+    <div class="section-header">
+      <div>
+        <div class="section-num">05</div>
+        <div class="section-title">Parliaments</div>
+        <div class="section-sub">Student parliament & model UN</div>
+      </div>
+      <div class="section-arrow">+</div>
+    </div>
+    <div class="section-content">
+      <div class="section-inner">
+        <div class="events-list">
+          <div class="event-item">
+            <div class="event-year">—</div>
+            <div>
+              <div class="event-name">Add your parliament events here</div>
+              <div class="event-detail">Names, roles, years, positions held</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" onclick="toggle(this)">
+    <div class="section-header">
+      <div>
+        <div class="section-num">06</div>
+        <div class="section-title">Building</div>
+        <div class="section-sub">Startups & ventures</div>
+      </div>
+      <div class="section-arrow">+</div>
+    </div>
+    <div class="section-content">
+      <div class="section-inner">
+        <div class="events-list">
+          <div class="event-item">
+            <div class="event-year">2024</div>
+            <div>
+              <div class="event-name">Inflection Network</div>
+              <div class="event-detail">Agentic payments infrastructure — financial identity, delegated spend controls & programmable settlement rails for AI agents</div>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-year">2022</div>
+            <div>
+              <div class="event-name">Levitate</div>
+              <div class="event-detail">US / APAC GTM advisory</div>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-year">2020</div>
+            <div>
+              <div class="event-name">Vacus</div>
+              <div class="event-detail">B2B SaaS · Fortune 500 clients</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-text">Pratik · Bangalore · 2025</div>
+  <div class="footer-links">
+    <a href="https://twitter.com/" target="_blank">X</a>
+    <a href="https://linkedin.com/" target="_blank">LinkedIn</a>
+    <a href="#" target="_blank">Podcast</a>
+  </div>
+</div>
+
+<!-- Tooltip div -->
+<div id="map-tooltip" style="position:fixed;background:#fff;border:1px solid rgba(0,0,0,0.12);padding:6px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;pointer-events:none;opacity:0;z-index:999;color:#1a1714;transition:opacity 0.15s;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+// ── TOGGLE ──
+function toggle(box) {
+  const isOpen = box.classList.contains('open');
+  document.querySelectorAll('.section-box.open').forEach(b => b.classList.remove('open'));
+  if (!isOpen) box.classList.add('open');
+}
+
+// ── BOOKS ──
+const books = [
+  { title:'Greenlights', author:'Matthew McConaughey', genre:'Memoir', status:'finished', olid:'OL24869265M' },
+  { title:'The Outsider', author:'Vir Das', genre:'Memoir', status:'finished', olid:null },
+  { title:'Discovery of India', author:'Jawaharlal Nehru', genre:'Memoir', status:'finished', olid:'OL7353626M' },
+  { title:'The New Icon', author:'Arun Shourie', genre:'History', status:'finished', olid:null },
+  { title:'Shattered Lands', author:'Sam Dalrymple', genre:'History', status:'finished', olid:null },
+  { title:'Unseen', author:'Megha Vishwanath', genre:'Memoir', status:'finished', olid:null },
+  { title:'Shoe Dog', author:'Phil Knight', genre:'Memoir', status:'finished', olid:'OL27320570M' },
+  { title:'Atlas Shrugged', author:'Ayn Rand', genre:'Philosophy', status:'finished', olid:'OL7353573M' },
+  { title:'The Innovators', author:'Walter Isaacson', genre:'Non-Fiction', status:'finished', olid:'OL25434028M' },
+  { title:'Nils Holgersson', author:'Selma Lagerlöf', genre:'Fiction', status:'finished', olid:null },
+  { title:'Principles', author:'Ray Dalio', genre:'Memoir', status:'reading', olid:'OL27361725M' },
+  { title:'Vikramaditya', author:'V A Iyer', genre:'History', status:'reading', olid:null },
+  { title:'Critique of Judgement', author:'Immanuel Kant', genre:'Philosophy', status:'reading', olid:'OL7246381M' },
+];
+
+(function renderBooks() {
+  const grid = document.getElementById('books-grid');
+  books.forEach(book => {
+    const coverUrl = book.olid
+      ? `https://covers.openlibrary.org/b/olid/${book.olid}-M.jpg`
+      : `https://covers.openlibrary.org/b/title/${encodeURIComponent(book.title)}-M.jpg`;
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    card.innerHTML = `
+      <div class="book-cover">
+        <img src="${coverUrl}" alt="${book.title}" loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="book-cover-fallback" style="display:none;"><span>${book.title}</span></div>
+      </div>
+      <div>
+        <div class="book-title-text">${book.title}</div>
+        <div class="book-author">${book.author}</div>
+        <div class="book-tags">
+          <span class="tag">${book.genre}</span>
+          <span class="tag ${book.status}">${book.status === 'reading' ? 'Reading' : 'Done'}</span>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+})();
+
+// ── MAP ──
+const visitedIds = new Set([
+  36,392,410,764,704,702,458,360,356,  // Asia-Pacific
+  826,250,276,380,724,620,528,756,40,203,616,300,792,348,56,191,  // Europe
+  703,705,442,578,752,246,208,372,196,470,642,100,688,807,        // More Europe
+  840,124,484,76,604,                   // Americas
+  784,682,400,818,504,404,             // Middle East & Africa
+  792,                                  // Turkey
+]);
+
+const countryNames = {
+  36:'Australia',392:'Japan',410:'South Korea',764:'Thailand',704:'Vietnam',
+  702:'Singapore',458:'Malaysia',360:'Indonesia',356:'India',826:'United Kingdom',
+  250:'France',276:'Germany',380:'Italy',724:'Spain',620:'Portugal',528:'Netherlands',
+  756:'Switzerland',40:'Austria',203:'Czech Republic',616:'Poland',300:'Greece',
+  792:'Turkey',348:'Hungary',56:'Belgium',191:'Croatia',840:'United States',
+  124:'Canada',484:'Mexico',76:'Brazil',604:'Peru',784:'UAE',682:'Saudi Arabia',
+  400:'Jordan',818:'Egypt',504:'Morocco',404:'Kenya',703:'Slovakia',705:'Slovenia',
+  442:'Luxembourg',578:'Norway',752:'Sweden',246:'Finland',208:'Denmark',
+  372:'Ireland',196:'Cyprus',470:'Malta',642:'Romania',100:'Bulgaria',
+  688:'Serbia',807:'North Macedonia'
+};
+
+const svg = d3.select('#world-map');
+const W = 960, H = 500;
+const proj = d3.geoNaturalEarth1().scale(153).translate([W/2, H/2]);
+const pathGen = d3.geoPath().projection(proj);
+const tooltip = document.getElementById('map-tooltip');
+
+const zoom = d3.zoom().scaleExtent([1,8]).on('zoom', e => g.attr('transform', e.transform));
+svg.call(zoom);
+
+const g = svg.append('g');
+g.append('path').datum({type:'Sphere'}).attr('d',pathGen).attr('fill','#dceae2');
+g.append('path').datum(d3.geoGraticule()()).attr('d',pathGen).attr('fill','none').attr('stroke','rgba(255,255,255,0.4)').attr('stroke-width',0.3);
+
+fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+  .then(r => r.json())
+  .then(world => {
+    g.selectAll('.c')
+      .data(topojson.feature(world, world.objects.countries).features)
+      .join('path')
+      .attr('class','c')
+      .attr('d', pathGen)
+      .attr('fill', d => visitedIds.has(+d.id) ? '#2d6a4f' : '#c8d8cf')
+      .attr('stroke','#fff')
+      .attr('stroke-width', 0.5)
+      .style('cursor', d => visitedIds.has(+d.id) ? 'pointer' : 'default')
+      .on('mousemove', function(e, d) {
+        if (!visitedIds.has(+d.id)) return;
+        d3.select(this).attr('fill','#1a4a35');
+        tooltip.style.opacity = 1;
+        tooltip.style.left = (e.clientX + 14) + 'px';
+        tooltip.style.top  = (e.clientY - 32) + 'px';
+        tooltip.textContent = '✓ ' + (countryNames[+d.id] || 'Visited');
+      })
+      .on('mouseleave', function(e,d) {
+        tooltip.style.opacity = 0;
+        if (visitedIds.has(+d.id)) d3.select(this).attr('fill','#2d6a4f');
+      });
+
+    g.append('path')
+      .datum(topojson.mesh(world, world.objects.countries, (a,b) => a!==b))
+      .attr('d', pathGen).attr('fill','none').attr('stroke','#fff').attr('stroke-width',0.4);
+  });
+</script>
+</body>
+</html>
